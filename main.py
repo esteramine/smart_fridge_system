@@ -15,16 +15,17 @@ cam.capture_file(img_path)
 
 # ask gemini
 # file = genai.upload_to_gemini(img_path, img_name, mime_type="image/jpeg")
-file = genai.upload_to_gemini("food.jpg", "fridge_food", mime_type="image/jpeg")
+file = genai.upload_to_gemini("food.jpeg", "fridge_food", mime_type="image/jpeg")
+response = ""
 if (genai.verify_upload(file.name)):
-    response = genai.send_message(file)
-    print(response.text)
+    response = (genai.send_message(file)).text
+    print(response)
     genai.delete_upload(file.name)
 os.remove(img_path) # remove local image file
 
 # upload to firebase
-
-
+if (response.strip() != ""):
+    db.push_food_list(response)
 
 
 # database

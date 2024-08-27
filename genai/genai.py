@@ -23,8 +23,21 @@ model = genai.GenerativeModel(
   # safety_settings = Adjust safety settings
 )
 
+def upload_to_gemini(path, display_name, mime_type=None):
+  """
+  Uploads the given file to Gemini.
+
+  :param path: Path of the file you want to upload.
+  :param display_name: An easy to read name of the file to stored in Gemini.
+  :param mime_type: Type of the file (ex. jpg/jpeg/png).
+  :return: Information of the file uploaded.
+  """
+  file = genai.upload_file(path, display_name=display_name, mime_type=mime_type)
+  print(f"Uploaded file '{file.display_name}' as: {file.uri}")
+  return file
+
 files = [
-  upload_to_gemini("food.jpeg", mime_type="image/jpeg"),
+  upload_to_gemini("food.jpeg", "food", mime_type="image/jpeg"),
 ]
 
 chat_session = model.start_chat(
@@ -55,7 +68,6 @@ chat_session = model.start_chat(
     },
   ]
 )
-
 # chat_session = model.start_chat(
 #   history=[
 #     {
@@ -72,19 +84,6 @@ chat_session = model.start_chat(
 #     },
 #   ]
 # )
-
-def upload_to_gemini(path, display_name, mime_type=None):
-  """
-  Uploads the given file to Gemini.
-
-  :param path: Path of the file you want to upload.
-  :param display_name: An easy to read name of the file to stored in Gemini.
-  :param mime_type: Type of the file (ex. jpg/jpeg/png).
-  :return: Information of the file uploaded.
-  """
-  file = genai.upload_file(path, display_name=display_name, mime_type=mime_type)
-  print(f"Uploaded file '{file.display_name}' as: {file.uri}")
-  return file
 
 def verify_upload(name):
   try:
