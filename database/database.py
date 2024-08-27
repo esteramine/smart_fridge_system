@@ -1,8 +1,9 @@
 from dotenv import load_dotenv
 import os
 import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
+from firebase_admin import firestore, credentials
+
+from .data_processing import create_food_list
 
 load_dotenv()
 
@@ -17,11 +18,16 @@ db = firestore.client()
 
 inventory = db.collection("inventory")
 
-def add_food_item(food):
-  update_time, food_ref = inventory.add(food)
-   # access the auto-generated ID
-  print(f"Document ID: {food_ref.id}") 
-  return food_ref.id
+def push_food_list(text):
+  food_list = create_food_list(text)
+  for food_item in food_list:
+        food_dict = food_item.to_dict()
+        food_dict['created_at'] = firestore.SERVER_TIMESTAMP
+        # Add to Firestore collection
+        update_time, food_ref = inventory.add(food_dict)
+        # access the auto-generated ID
+        print(f"Document ID: {food_ref.id}") 
+
 
 def set_food_item(id, new_data):
   # TODO

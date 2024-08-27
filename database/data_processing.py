@@ -10,6 +10,17 @@ class FoodItem:
         self.ymax = int(ymax)
         self.xmax = int(xmax)
 
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "quantity": self.quantity,
+            "safety": self.safety,
+            "ymin": self.ymin,
+            "xmin": self.xmin,
+            "ymax": self.ymax,
+            "xmax": self.xmax,
+        }
+
     def __repr__(self):
         return f"FoodItem(name={self.name}, quantity={self.quantity}, safety={self.safety}, ymin={self.ymin}, xmin={self.xmin}, ymax={self.ymax}, xmax={self.xmax})"
 
