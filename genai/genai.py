@@ -78,4 +78,4 @@ def send_message(message):
   :return: Response of the message.
   """
   response = chat_session.send_message(message)
-  return response.text
+  return response
