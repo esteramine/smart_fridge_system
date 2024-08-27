@@ -1,9 +1,15 @@
+from dotenv import load_dotenv
+import os
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
+load_dotenv()
+
+key_path=os.getenv("FIREBASE_SERVICE_ACCOUNT_KEY_PATH")
+
 # Use a service account.
-cred = credentials.Certificate('serviceAccountKey.json')
+cred = credentials.Certificate(key_path)
 
 app = firebase_admin.initialize_app(cred)
 
