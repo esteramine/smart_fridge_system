@@ -10,6 +10,18 @@ class FoodItem:
         self.ymax = int(ymax)
         self.xmax = int(xmax)
 
+    @staticmethod
+    def from_dict(source):
+        return FoodItem(
+            name=source.get('name', ''),
+            quantity=source.get('quantity', 0),
+            safety=source.get('safety', 0),
+            ymin=source.get('ymin', 0),
+            xmin=source.get('xmin', 0),
+            ymax=source.get('ymax', 0),
+            xmax=source.get('xmax', 0)
+        )
+
     def to_dict(self):
         return {
             "name": self.name,

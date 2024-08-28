@@ -1,1 +1,1 @@
-from .database import push_food_list
+from .database import push_food_list, get_food_list

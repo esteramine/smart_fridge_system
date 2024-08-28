@@ -3,10 +3,22 @@ import os
 
 import genai
 import database as db
+import led
 from camera import initialize_camera, close_camera
 
-# read from firestore, and light the leds
+led.initialize()
 
+# when fridge door is open
+# read from firestore, and light the leds
+food_list = db.get_food_list()
+unsafe_food_list = filter(lambda item: item.safety == 1, food_list)
+for food in unsafe_food_list:
+  # light leds
+  led.light_area(xmin=food.xmin, xmax=food.xmax, ymin=food.ymin, ymax=food.ymax)
+  print(food)
+
+# when fridge door is just closed
+# light leds to give light for capturing image
 # capture image
 img_name = uuid4()
 img_path = f"{img_name}.jpg"

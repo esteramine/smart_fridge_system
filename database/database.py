@@ -3,7 +3,7 @@ import os
 import firebase_admin
 from firebase_admin import firestore, credentials
 
-from .data_processing import create_food_list
+from .data_processing import create_food_list, FoodItem
 
 load_dotenv()
 
@@ -37,9 +37,14 @@ def delete_food_item(id):
   # TODO
   return True
 
-def list_food_items():
-  # TODO
-  return []
+def get_food_list():
+  print('Database get food list.')
+  docs = inventory.stream()
+  food_list = []
+  for doc in docs:
+      food_list.append(FoodItem.from_dict(doc.to_dict()))
+      print(f"{doc.id} => {doc.to_dict()}")
+  return food_list
 
 
 
