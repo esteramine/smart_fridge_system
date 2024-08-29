@@ -21,19 +21,20 @@ near_magnetic = True
 while True:
 	## GPIO.input(4) == 1 means near magnetic field, 0 means far from magnetic field
 	## far from magnetic field (fridge opened), near_magnetic == True means the fridge door before is closed
-	if (not GPIO.input(4) and near_magnetic == True):
+    if (not GPIO.input(4) and near_magnetic == True):
+        # print("Fridge open!")
         print("Fridge open!")
-		near_magnetic = False
+        near_magnetic = False
         # when fridge door is open
         # read from firestore, and light the leds
         food_list = db.get_food_list()
-        unsafe_food_list = filter(lambda item: item.safety == 1, food_list)
+        unsafe_food_list = filter(lambda item: item.safety != 0, food_list)
         for food in unsafe_food_list:
             # light leds
-            led.light_area(xmin=food.xmin, xmax=food.xmax, ymin=food.ymin, ymax=food.ymax)
+            led.light_area(xmin=food.xmin, xmax=food.xmax, ymin=food.ymin, ymax=food.ymax, danger=food.safety)
             print(food)
 	## near magnetic field (fridge closed)
-	if (GPIO.input(4) and near_magnetic == False):
+    if (GPIO.input(4) and near_magnetic == False):
         print("Fridge closed!")
 
 		# when fridge door is just closed, light leds to give light for capturing image
@@ -59,4 +60,4 @@ while True:
             db.push_food_list(response)
         '''
         # 4. reset the state
-		near_magnetic = True
+        near_magnetic = True

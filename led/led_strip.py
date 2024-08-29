@@ -23,6 +23,11 @@ pixels1 = neopixel.NeoPixel(LED_PIN1, LED_COUNT, brightness=BRIGHTNESS)
 pixels2 = neopixel.NeoPixel(LED_PIN2, LED_COUNT, brightness=BRIGHTNESS)
 LED_INTVL = DV_H / (STRIP_LED_COUNT) # LED INTERVAL
 
+# Color Settings
+NO_COLOR = (0, 0, 0)
+RED = (255, 0, 0)
+YELLOW = (255, 255, 0)
+
 def __reset_led_color(pixels):
     pixels.fill((0, 0, 0))
     pixels.show()
@@ -73,7 +78,7 @@ def __convert_to_device_scale(ymin, xmin, ymax, xmax):
     return ymin, xmin, ymax, xmax
 
 
-def light_area(ymin, xmin, ymax, xmax):
+def light_area(ymin, xmin, ymax, xmax, danger):
   ymin, xmin, ymax, xmax = __convert_to_device_scale(ymin, xmin, ymax, xmax)
   col_min = __determine_col(xmin)
   print("LED col min: ", col_min)
@@ -84,10 +89,15 @@ def light_area(ymin, xmin, ymax, xmax):
   row_max = __determine_row(ymax)
   print("LED row max: ", row_max)
 
-#   __light_area_leds(col_min, col_max, row_min, row_max, (255,0,0))   
+  color = NO_COLOR
+  if danger == 1:
+    color = YELLOW
+  if danger == 2:
+    color = RED
+  __light_area_leds(col_min, col_max, row_min, row_max, color)   
 
-#   pixels1.show()
-#   pixels2.show()
+  pixels1.show()
+  pixels2.show()
 
 
 
