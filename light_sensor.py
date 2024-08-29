@@ -17,6 +17,5 @@ while True:
 		count += 1
 		print("take picture: ", count)
 		has_light = False
-		
 	
 
