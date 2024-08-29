@@ -12,7 +12,7 @@ while True:
 	if (not GPIO.input(4)):
 		near_magnetic = False
 	## near magnetic field (fridge closed)
-	if (GPIO.input(4) and has_light == False):
+	if (GPIO.input(4) and near_magnetic == False):
 		## take picture and save to database
 		count += 1
 		print("take picture: ", count)

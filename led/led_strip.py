@@ -66,6 +66,10 @@ def __light_area_leds(c_min, c_max, r_min, r_max, color):
             pixels2[(STRIP_LED_COUNT+r_min):(STRIP_LED_COUNT+r_max)] = [color] * r_diff
 
 def __convert_to_device_scale(ymin, xmin, ymax, xmax):
+    xmin = (xmin/1000) * DV_W
+    xmax = (xmax/1000) * DV_W
+    ymin = (ymin/1000) * DV_H
+    ymax = (ymax/1000) * DV_H
     return ymin, xmin, ymax, xmax
 
 
@@ -80,10 +84,10 @@ def light_area(ymin, xmin, ymax, xmax):
   row_max = __determine_row(ymax)
   print("LED row max: ", row_max)
 
-  __light_area_leds(col_min, col_max, row_min, row_max, (255,0,0))   
+#   __light_area_leds(col_min, col_max, row_min, row_max, (255,0,0))   
 
-  pixels1.show()
-  pixels2.show()
+#   pixels1.show()
+#   pixels2.show()
 
 
 
