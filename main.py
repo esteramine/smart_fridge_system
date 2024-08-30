@@ -38,26 +38,28 @@ while True:
         print("Fridge closed!")
 
 		# when fridge door is just closed, light leds to give light for capturing image
-        '''
+        
         # 1. capture image
-        img_name = uuid4()
+        img_name = str(uuid4())
         img_path = f"{img_name}.jpg"
         cam = initialize_camera()
         cam.capture_file(img_path)
 
         # 2. ask gemini
-        # file = genai.upload_to_gemini(img_path, img_name, mime_type="image/jpeg")
-        file = genai.upload_to_gemini("food.jpeg", "fridge_food", mime_type="image/jpeg")
+        file = genai.upload_to_gemini(img_path, img_name, mime_type="image/jpeg")
+        # file = genai.upload_to_gemini("food.jpeg", "fridge_food", mime_type="image/jpeg")
         response = ""
         if (genai.verify_upload(file.name)):
+            print("")
             response = (genai.send_message(file)).text
             print(response)
-            genai.delete_upload(file.name)
+            # genai.delete_upload(file.name)
         os.remove(img_path) # remove local image file
+        file = ""
 
         # 3. upload to firebase
         if (response.strip() != ""):
             db.push_food_list(response)
-        '''
+        
         # 4. reset the state
         near_magnetic = True
