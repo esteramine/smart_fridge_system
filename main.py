@@ -11,9 +11,17 @@ led.initialize()
 # TODO: integrate to hall_sensor package
 import RPi.GPIO as GPIO
 
+# gas sensor library
+from gpiozero import DigitalInputDevice
+import time
+
 # Hall Sensor
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(4, GPIO.IN)
+
+# Gas Sensor
+mq3 = DigitalInputDevice(17)
+mq2 = DigitalInputDevice(27)
 
 near_magnetic = True
 
@@ -63,3 +71,21 @@ while True:
         
         # 4. reset the state
         near_magnetic = True
+
+        ## gas sensor
+    i = 0
+    # print(mq2.is_active)
+    if(mq2.is_active==0):
+        # print("time stamp ", "f'{i}s" , " Methane Gas detected")
+        print(f"time stamp {i}s: Methane Gas detected")
+    else:
+        print(f"time stamp {i}s: No Methane Gas detected")
+    
+    if(mq3.is_active==0):
+        # print("time stamp ", "f'{i}s" , " Alcohol Gas detected")
+        print(f"time stamp {i}s: Alcohol Gas detected")
+    else:
+        # print("time stamp ", "f'{i}s" , " No Alcohol Gas detected")
+        print(f"time stamp {i}s: No Alcohol Gas detected")
+    i= i+1
+    time.sleep(1)
