@@ -3,5 +3,8 @@
 virtual/
 **/__pycache__
 
+
 **/*.jpeg
 **/*.jpg
+# do not ignore .jpeg files that contain 'test_food' in the name
+!test_food*.jpeg
