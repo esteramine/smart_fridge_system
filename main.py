@@ -63,7 +63,6 @@ while True:
             print(response)
             # genai.delete_upload(file.name)
         os.remove(img_path) # remove local image file
-        file = ""
 
         # 3. upload to firebase
         if (response.strip() != ""):
