@@ -1,12 +1,15 @@
+from datetime import datetime, timedelta
 from uuid import uuid4
 import os
 
 import genai
 import database as db
+from database import create_food_list
 import led
 from camera import initialize_camera, close_camera
 
 led.initialize()
+cam = initialize_camera()
 
 # TODO: integrate to hall_sensor package
 import RPi.GPIO as GPIO
@@ -25,6 +28,10 @@ mq2 = DigitalInputDevice(27)
 
 near_magnetic = True
 
+food_list = []
+
+def is_similar_location(new, old):
+    print('xmin, xmax, ymin, ymax, remember to determine whether they have value (can check from_dict whether has default value)')
 
 while True:
 	## GPIO.input(4) == 1 means near magnetic field, 0 means far from magnetic field
@@ -45,12 +52,12 @@ while True:
     if (GPIO.input(4) and near_magnetic == False):
         print("Fridge closed!")
 
-		# when fridge door is just closed, light leds to give light for capturing image
+		# TODO: when fridge door is just closed, light leds to give light for capturing image
         
         # 1. capture image
         img_name = str(uuid4())
         img_path = f"{img_name}.jpg"
-        cam = initialize_camera()
+        
         cam.capture_file(img_path)
 
         # 2. ask gemini
@@ -64,9 +71,38 @@ while True:
             # genai.delete_upload(file.name)
         os.remove(img_path) # remove local image file
 
-        # 3. upload to firebase
+        food_list = create_food_list(response)
+
+        # 3. get recent db data (know which food already in fridge)
+        # TODO: detect which food is the same and which are not and update the corresponding data
+        # query in_fridge == True or last_out_fridge_time <= 2 days
+        last_in_fridge_food = db.get_food_items([("in_fridge", "==", True)])
+        recent_out_fridge_food = db.get_food_items([("in_fridge", "==", False), ("last_out_fridge_time", "<=", datetime.now() - timedelta(days=2))])
+        updated_in_fridge_food = []
+        # check whether the data is similar, and update the information, or else, add new food item
+        for i in range(len(food_list)):
+            similar_in_fridge = filter(lambda item: item.name.lower() == food_list[i].name.lower(), last_in_fridge_food)
+            for similar in similar_in_fridge:
+                print('TODO')
+            # (1) check whether there is similar last_in_fridge_food
+            # (1.1) if there is, update the coordinates and added to updated_in_fridge_food, remove from food_list and last_in_fridge_food
+            # (1.2) if no, food_list remains unchanged
+
+        # last_in_fridge_food remained items should be updated to in_fridge = False and last_out_fridge_time = firestore.SERVER_TIMESTAMP
+
+        # recent_out_fridge_food some food should be updated to in_fridge = True
+
+        # update updated_in_fridge_food info
+
+        # add food_list remained item as new food items
+
+
+
+        # 4. upload to firebase
         if (response.strip() != ""):
-            db.push_food_list(response)
+            db.push_food_list(food_list)
+
+        
         
         # 4. reset the state
         near_magnetic = True
