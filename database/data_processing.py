@@ -3,7 +3,7 @@ import re
 from .food_expiration import get_expiration_date
 
 class FoodItem:
-    def __init__(self, name, quantity, danger, category, ymin, xmin, ymax, xmax, expiration_date=None, user_defined=False, in_fridge=True, doc_id=None):
+    def __init__(self, name, quantity, danger, category, ymin, xmin, ymax, xmax, expiration_date=None, user_defined=False, in_fridge=True, last_out_fridge_time = None, doc_id=None):
         self.doc_id = doc_id
         self.name = name.strip()
         self.quantity = int(quantity)
@@ -16,6 +16,7 @@ class FoodItem:
         self.expiration_date = expiration_date if expiration_date else get_expiration_date(self.category)
         self.user_defined = user_defined
         self.in_fridge = in_fridge
+        self.last_out_fridge_time = last_out_fridge_time
 
     @staticmethod
     def from_dict(source, doc_id=None):
@@ -31,6 +32,7 @@ class FoodItem:
             expiration_date=source.get('expiration_date', ""),
             user_defined = source.get('user_defined', False),
             in_fridge = source.get('in_fridge', False),
+            last_out_fridge_time=source.get('last_out_fridge_time', None),
             doc_id=doc_id
         )
 
@@ -43,6 +45,7 @@ class FoodItem:
             "expiration_date": self.expiration_date,
             "user_defined": self.user_defined,
             "in_fridge": self.in_fridge,
+            "last_out_fridge_time": self.last_out_fridge_time,
             "ymin": self.ymin,
             "xmin": self.xmin,
             "ymax": self.ymax,
@@ -50,7 +53,7 @@ class FoodItem:
         }
 
     def __repr__(self):
-        return f"FoodItem(doc_id={self.doc_id}, name={self.name}, quantity={self.quantity}, danger={self.danger}, category={self.category}, expiration_date={self.expiration_date}, user_defined={self.user_defined}, in_fridge={self.in_fridge}, ymin={self.ymin}, xmin={self.xmin}, ymax={self.ymax}, xmax={self.xmax})"
+        return f"FoodItem(doc_id={self.doc_id}, name={self.name}, quantity={self.quantity}, danger={self.danger}, category={self.category}, expiration_date={self.expiration_date}, last_out_fridge_time={self.last_out_fridge_time}, user_defined={self.user_defined}, in_fridge={self.in_fridge}, ymin={self.ymin}, xmin={self.xmin}, ymax={self.ymax}, xmax={self.xmax})"
 
 def create_food_list(text):
     # example food item string: 
