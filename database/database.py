@@ -47,6 +47,7 @@ def update_in_fridge_status(document_ids):
 def update_food_item(food_item):
     doc_ref = inventory.document(food_item.doc_id)
     doc_ref.update(food_item.to_dict())
+    print(f"Updated to database, Document ID: {doc_ref.id}, {food_item}") 
 
 def set_food_item(id, new_data):
   # TODO
