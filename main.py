@@ -30,8 +30,30 @@ near_magnetic = True
 
 food_list = []
 
+# THRESHOLD
+KEYPOINT_DISTANCE_THRESHOLD = 0.75
+KEYPOINT_MATCHED_THRESHOLD = 0.7
+TEXTURE_THRESHOLD = 0.5
+
+def copy_bounding_box(source, need_copy):
+    need_copy.xmin = source.xmin
+    need_copy.ymin = source.ymin
+    need_copy.xmax = source.xmax
+    need_copy.ymax = source.ymax
+    return need_copy
+
+def is_keypoints_matched(new, old):
+    print("keypoint matched")
+    # if len(good_matches) > len(descriptors_old) * 0.7:  # For example, 70% of old keypoints should match
+    #     print("Items are considered the same despite deformation.")
+
+def is_texture_matched(new, old):
+    print("texture matched")
+
 def is_similar_location(new, old):
-    print('xmin, xmax, ymin, ymax, remember to determine whether they have value (can check from_dict whether has default value)')
+    if (abs(old.xmin - new.xmin) < 50 and abs(old.ymin - new.ymin) < 50 and abs(old.xmax - new.xmax) < 50 and abs(old.ymax - new.ymax) < 50):
+        return True
+    return False
 
 while True:
 	## GPIO.input(4) == 1 means near magnetic field, 0 means far from magnetic field
@@ -83,7 +105,13 @@ while True:
         for i in range(len(food_list)):
             similar_in_fridge = filter(lambda item: item.name.lower() == food_list[i].name.lower(), last_in_fridge_food)
             for similar in similar_in_fridge:
-                print('TODO')
+                if (is_keypoints_matched(food_list[i], similar) and is_texture_matched(food_list[i], similar)):
+                    db.update_food_item(copy_bounding_box(food_list[i], similar))
+                    break
+            
+
+
+
             # (1) check whether there is similar last_in_fridge_food
             # (1.1) if there is, update the coordinates and added to updated_in_fridge_food, remove from food_list and last_in_fridge_food
             # (1.2) if no, food_list remains unchanged
