@@ -18,7 +18,7 @@ LED_PIN2 = board.D21
 STRIP_LED_COUNT = 15 # 一條燈條有幾顆 LED
 STRIP_COUNT = 2 # 幾條燈條串連成統一控制
 LED_COUNT = STRIP_LED_COUNT * STRIP_COUNT # 串聯後 LED 總數
-BRIGHTNESS = 0.1
+BRIGHTNESS = 0.5
 pixels1 = neopixel.NeoPixel(LED_PIN1, LED_COUNT, brightness=BRIGHTNESS)
 pixels2 = neopixel.NeoPixel(LED_PIN2, LED_COUNT, brightness=BRIGHTNESS)
 LED_INTVL = DV_H / (STRIP_LED_COUNT) # LED INTERVAL
@@ -36,6 +36,12 @@ def initialize():
     __reset_led_color(pixels1)
     __reset_led_color(pixels2)
 
+def light_all():
+    pixels1.fill((255, 255, 255))
+    pixels2.fill((255, 255, 255))
+    pixels1.show()
+    pixels2.show()
+    
 def __determine_col(x):
     # Area 1
     if (0 <= x and x < (DV_W/4)):
@@ -99,5 +105,20 @@ def light_area(ymin, xmin, ymax, xmax, danger):
   pixels1.show()
   pixels2.show()
 
+if __name__ == "__main__":
+    initialize()
+    light_all()
+    time.sleep(2)
+    initialize()
+    
+    pixels1[16] = (0, 0, 255)
+    pixels1[28] = (255, 0, 0)
+    pixels2[16] = (0, 0, 255)
+    pixels2[28] = (255, 0, 0)
+    pixels1.show()
+    pixels2.show()
 
+    time.sleep(5)
+    initialize()
+    
 

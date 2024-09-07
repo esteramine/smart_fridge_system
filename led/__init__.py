@@ -1,1 +1,1 @@
-from .led_strip import initialize, light_area
+from .led_strip import initialize, light_area, light_all

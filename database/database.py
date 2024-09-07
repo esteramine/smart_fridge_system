@@ -25,7 +25,8 @@ def push_food_list(food_list):
         food_dict = food_item.to_dict()
         food_dict['created_at'] = firestore.SERVER_TIMESTAMP
         # Add to Firestore collection
-        update_time, food_ref = inventory.add(food_dict)
+        food_ref = inventory.document(food_item.doc_id)
+        food_ref.set(food_dict)
         # access the auto-generated ID
         print(f"Document ID: {food_ref.id}") 
 

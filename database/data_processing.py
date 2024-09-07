@@ -1,4 +1,5 @@
 import re
+import uuid
 
 from .food_expiration import get_expiration_date
 
@@ -71,6 +72,7 @@ def create_food_list(text):
                 coordinates = re.sub(r'[\[\]]', '', attrs[4]).split()
                 if len(coordinates) == 4:
                     food_item = FoodItem(
+                        doc_id=str(uuid.uuid4()),
                         name=attrs[0],
                         quantity=attrs[1],
                         danger=attrs[2],
