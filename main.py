@@ -3,6 +3,7 @@ from io import BytesIO
 from datetime import datetime, timedelta
 from uuid import uuid4
 import os
+import time
 
 import genai
 import google_cloud as gcs
@@ -72,6 +73,19 @@ def is_similar_location(new, old):
         return True
     return False
 
+def has_expired(expiration_date_str):
+    # Parse the expiration date string into a datetime.date object
+    expiration_date = datetime.strptime(expiration_date_str, '%Y-%m-%d').date()
+    today = datetime.now().date()
+    return expiration_date < today
+
+def almost_expired(expiration_date_str): # 3 days as standard
+    # Parse the expiration date string into a datetime.date object
+    expiration_date = datetime.strptime(expiration_date_str, '%Y-%m-%d').date()
+    today = datetime.now().date()
+    difference = expiration_date - today
+    return difference <= timedelta(days=3)
+
 while True:
 	## GPIO.input(4) == 1 means near magnetic field, 0 means far from magnetic field
 	## far from magnetic field (fridge opened), near_magnetic == True means the fridge door before is closed
@@ -82,17 +96,32 @@ while True:
         # when fridge door is open
         # read from firestore, and light the leds
         food_list = db.get_food_list()
+
+        # unsafe food led lighting
         unsafe_food_list = filter(lambda item: item.danger != 0, food_list)
         for food in unsafe_food_list:
             # light leds
             led.light_area(xmin=food.xmin, xmax=food.xmax, ymin=food.ymin, ymax=food.ymax, danger=food.danger)
             print(food)
+
+        almost_expired_food = filter(lambda item: almost_expired(item.expiration_date), food_list)
+        expired_food = filter(lambda item: has_expired(item.expiration_date), food_list)
+        for food in almost_expired_food:
+            # light leds
+            led.light_area(xmin=food.xmin, xmax=food.xmax, ymin=food.ymin, ymax=food.ymax, danger=1)
+            print(food)
+        for food in expired_food:
+            # light leds
+            led.light_area(xmin=food.xmin, xmax=food.xmax, ymin=food.ymin, ymax=food.ymax, danger=2)
+            print(food)
+            
 	## near magnetic field (fridge closed)
     if (GPIO.input(4) and near_magnetic == False):
         print("Fridge closed!")
 
 		# TODO: when fridge door is just closed, light leds to give light for capturing image
         led.light_all()
+        time.sleep(0.5)
         # 1. capture image
         img_name = str(uuid4())
         img_path = f"{img_name}.jpg"
@@ -119,7 +148,10 @@ while True:
         # query in_fridge == True or last_out_fridge_time <= 2 days
 
         # TODO:
-        # last_in_fridge_food = db.get_food_items([("in_fridge", "==", True)])
+        last_in_fridge_food = db.get_food_items([("in_fridge", "==", True)])
+        document_ids = [food.doc_id for food in last_in_fridge_food]
+        db.update_in_fridge_status(document_ids)
+
         # recent_out_fridge_food = db.get_food_items([("in_fridge", "==", False), ("last_out_fridge_time", "<=", datetime.now() - timedelta(days=2))])
         # updated_in_fridge_food = []
         # # check whether the data is similar, and update the information, or else, add new food item

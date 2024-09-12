@@ -129,3 +129,5 @@ def query_recent_food():
     # Return the list of FoodItem objects
     return list(food_items.values())
 
+if __name__ == "__main__":
+    print(get_food_items([("in_fridge", "==", True)]))
