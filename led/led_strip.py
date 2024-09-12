@@ -18,7 +18,7 @@ LED_PIN2 = board.D21
 STRIP_LED_COUNT = 15 # 一條燈條有幾顆 LED
 STRIP_COUNT = 2 # 幾條燈條串連成統一控制
 LED_COUNT = STRIP_LED_COUNT * STRIP_COUNT # 串聯後 LED 總數
-BRIGHTNESS = 0.5
+BRIGHTNESS = 0.05
 pixels1 = neopixel.NeoPixel(LED_PIN1, LED_COUNT, brightness=BRIGHTNESS)
 pixels2 = neopixel.NeoPixel(LED_PIN2, LED_COUNT, brightness=BRIGHTNESS)
 LED_INTVL = DV_H / (STRIP_LED_COUNT) # LED INTERVAL
@@ -71,12 +71,12 @@ def __light_area_leds(c_min, c_max, r_min, r_max, color):
             pixels1[r_min:r_max] = [color] * r_diff
         elif (col == 2):
             # pixels1[(STRIP_LED_COUNT+r_min):(STRIP_LED_COUNT+r_max)] = [color] * r_diff
-            pixels1[(STRIP_LED_COUNT-r_max):(STRIP_LED_COUNT-r_min)] = [color] * r_diff
+            pixels1[(LED_COUNT-r_max):(LED_COUNT-r_min)] = [color] * r_diff
         elif (col == 3):
             pixels2[r_min:r_max] = [color] * r_diff
         else:
             # pixels2[(STRIP_LED_COUNT+r_min):(STRIP_LED_COUNT+r_max)] = [color] * r_diff
-            pixels2[(STRIP_LED_COUNT-r_max):(STRIP_LED_COUNT-r_min)] = [color] * r_diff
+            pixels2[(LED_COUNT-r_max):(LED_COUNT-r_min)] = [color] * r_diff
 
 def __convert_to_device_scale(ymin, xmin, ymax, xmax):
     xmin = (xmin/1000) * DV_W
@@ -109,19 +109,25 @@ def light_area(ymin, xmin, ymax, xmax, danger):
 
 if __name__ == "__main__":
     initialize()
-    light_all()
-    time.sleep(2)
-    initialize()
+    # light_all()
+    # time.sleep(2)
+    # initialize()
     
-    pixels1[0] = (0, 255, 0)
-    pixels1[16] = (0, 0, 255)
-    pixels1[28] = (255, 0, 0)
-    pixels2[0] = (0, 255, 0)
-    pixels2[16] = (0, 0, 255)
-    pixels2[28] = (255, 0, 0)
+    # pixels1[0] = (0, 255, 0)
+    # pixels1[16] = (0, 0, 255)
+    # pixels1[28] = (255, 0, 0)
+    # pixels2[0] = (0, 255, 0)
+    # pixels2[16] = (0, 0, 255)
+    # pixels2[28] = (255, 0, 0)
+    # pixels1.show()
+    # pixels2.show()
+
+    # time.sleep(5)
+    # initialize()
+
+    __light_area_leds(3, 4, 2, 4, YELLOW)
     pixels1.show()
     pixels2.show()
-
     time.sleep(5)
     initialize()
     
