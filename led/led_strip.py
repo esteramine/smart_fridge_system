@@ -70,11 +70,13 @@ def __light_area_leds(c_min, c_max, r_min, r_max, color):
         if (col == 1):
             pixels1[r_min:r_max] = [color] * r_diff
         elif (col == 2):
-            pixels1[(STRIP_LED_COUNT+r_min):(STRIP_LED_COUNT+r_max)] = [color] * r_diff
+            # pixels1[(STRIP_LED_COUNT+r_min):(STRIP_LED_COUNT+r_max)] = [color] * r_diff
+            pixels1[(STRIP_LED_COUNT-r_max):(STRIP_LED_COUNT-r_min)] = [color] * r_diff
         elif (col == 3):
             pixels2[r_min:r_max] = [color] * r_diff
         else:
-            pixels2[(STRIP_LED_COUNT+r_min):(STRIP_LED_COUNT+r_max)] = [color] * r_diff
+            # pixels2[(STRIP_LED_COUNT+r_min):(STRIP_LED_COUNT+r_max)] = [color] * r_diff
+            pixels2[(STRIP_LED_COUNT-r_max):(STRIP_LED_COUNT-r_min)] = [color] * r_diff
 
 def __convert_to_device_scale(ymin, xmin, ymax, xmax):
     xmin = (xmin/1000) * DV_W
@@ -111,8 +113,10 @@ if __name__ == "__main__":
     time.sleep(2)
     initialize()
     
+    pixels1[0] = (0, 255, 0)
     pixels1[16] = (0, 0, 255)
     pixels1[28] = (255, 0, 0)
+    pixels2[0] = (0, 255, 0)
     pixels2[16] = (0, 0, 255)
     pixels2[28] = (255, 0, 0)
     pixels1.show()
